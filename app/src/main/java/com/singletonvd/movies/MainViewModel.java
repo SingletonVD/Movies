@@ -29,6 +29,7 @@ public class MainViewModel extends AndroidViewModel {
 
     public MainViewModel(@NonNull Application application) {
         super(application);
+        loadMovies();
     }
 
     public void loadMovies() {
@@ -36,6 +37,9 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void loadMovies(int page) {
+        Boolean loading = isLoading.getValue();
+        if (loading != null && loading) return;
+
         Disposable disposable = apiService.loadMovies(page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

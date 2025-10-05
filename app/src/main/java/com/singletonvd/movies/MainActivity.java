@@ -41,9 +41,6 @@ public class MainActivity extends AppCompatActivity {
             progressBarLoadingMovies.setVisibility(visibility);
         });
 
-        if (!viewModel.getMovies().isInitialized()) {
-            viewModel.loadMovies();
-        }
         moviesAdapter.setOnReachEndListener(viewModel::loadMovies);
     }
 }
