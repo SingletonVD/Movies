@@ -1,11 +1,19 @@
 package com.singletonvd.movies;
 
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
+@Entity(tableName = "favorite_movies")
 public class Movie implements Serializable {
 
+    @PrimaryKey
     @SerializedName("id")
     private final int id;
 
@@ -18,16 +26,36 @@ public class Movie implements Serializable {
     @SerializedName("year")
     private final int year;
 
+    @Embedded
     @SerializedName("poster")
     private final Poster poster;
 
+    @Embedded
     @SerializedName("rating")
     private final Rating rating;
 
+    @Ignore
     @SerializedName("videos")
     private final Videos videos;
 
+    public Movie(
+            int id,
+            String name,
+            String description,
+            int year,
+            Poster poster,
+            Rating rating
+    ) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.year = year;
+        this.poster = poster;
+        this.rating = rating;
+        this.videos = new Videos(new ArrayList<>());
+    }
 
+    @Ignore
     public Movie(
             int id,
             String name,

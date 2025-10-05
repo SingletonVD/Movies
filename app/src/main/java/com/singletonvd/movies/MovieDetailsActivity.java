@@ -2,12 +2,14 @@ package com.singletonvd.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +25,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView textViewDescription;
     private RecyclerView recyclerViewTrailers;
     private RecyclerView recyclerViewReviews;
+    private ImageView imageViewStar;
+
     private MovieDetailsViewModel viewModel;
 
     public static Intent makeIntent(Context context, Movie movie) {
@@ -53,6 +57,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         Movie movie = (Movie) getIntent().getSerializableExtra(EXTRA_MOVIE);
 
+        Drawable starOff = ContextCompat.getDrawable(this, android.R.drawable.star_big_off);
+        Drawable starOn = ContextCompat.getDrawable(this, android.R.drawable.star_big_on);
+
         if (movie != null) {
             Glide.with(this)
                     .load(movie.getPoster().getUrl())
@@ -68,6 +75,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             viewModel.loadReviews(movie.getId());
             viewModel.getReviews().observe(this, reviewsAdapter::setReviews);
+
+            viewModel.getFavoriteMovie(movie.getId()).observe(this, movieInDb -> {
+                if (movieInDb == null || movieInDb.getId() != movie.getId()) {
+                    imageViewStar.setImageDrawable(starOff);
+                    imageViewStar.setOnClickListener(view -> viewModel.addMovie(movie));
+                } else {
+                    imageViewStar.setImageDrawable(starOn);
+                    imageViewStar.setOnClickListener(view -> viewModel.removeMovie(movie.getId()));
+                }
+            });
         }
     }
 
@@ -78,5 +95,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         textViewDescription = findViewById(R.id.textViewDescription);
         recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
         recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
+        imageViewStar = findViewById(R.id.imageViewStar);
     }
 }
