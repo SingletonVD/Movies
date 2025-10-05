@@ -25,13 +25,14 @@ public class MainViewModel extends AndroidViewModel {
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     private final ApiService apiService = ApiFactory.apiService;
 
+    private int page = 1;
+
     public MainViewModel(@NonNull Application application) {
         super(application);
     }
 
     public void loadMovies() {
-        int firstPage = 1;
-        loadMovies(firstPage);
+        loadMovies(page++);
     }
 
     public void loadMovies(int page) {
@@ -44,7 +45,15 @@ public class MainViewModel extends AndroidViewModel {
                 })
                 .doAfterTerminate(() -> isLoading.setValue(false))
                 .subscribe(
-                        moviesResponse -> movies.setValue(moviesResponse.getMovies()),
+                        moviesResponse -> {
+                            List<Movie> loadedMovies = movies.getValue();
+                            if (loadedMovies != null) {
+                                loadedMovies.addAll(moviesResponse.getMovies());
+                                movies.setValue(loadedMovies);
+                            } else {
+                                movies.setValue(moviesResponse.getMovies());
+                            }
+                        },
                         error -> {
                             isError.setValue(true);
                             Log.d(

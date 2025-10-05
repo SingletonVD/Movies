@@ -44,5 +44,6 @@ public class MainActivity extends AppCompatActivity {
         if (!viewModel.getMovies().isInitialized()) {
             viewModel.loadMovies();
         }
+        moviesAdapter.setOnReachEndListener(viewModel::loadMovies);
     }
 }
