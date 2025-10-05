@@ -25,7 +25,7 @@ public class FavoritesListActivity extends AppCompatActivity {
 
         MoviesAdapter moviesAdapter = new MoviesAdapter();
         moviesAdapter.setOnCLickListener(movie ->
-                MovieDetailsActivity.makeIntent(this, movie)
+                startActivity(MovieDetailsActivity.makeIntent(this, movie))
         );
 
         viewModel = new ViewModelProvider(this).get(FavoriteMoviesViewModel.class);
