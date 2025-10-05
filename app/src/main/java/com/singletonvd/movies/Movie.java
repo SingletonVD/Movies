@@ -24,14 +24,26 @@ public class Movie implements Serializable {
     @SerializedName("rating")
     private final Rating rating;
 
+    @SerializedName("videos")
+    private final Videos videos;
 
-    public Movie(int id, String name, String description, int year, Poster poster, Rating rating) {
+
+    public Movie(
+            int id,
+            String name,
+            String description,
+            int year,
+            Poster poster,
+            Rating rating,
+            Videos videos
+    ) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.year = year;
         this.poster = poster;
         this.rating = rating;
+        this.videos = videos;
     }
 
     public int getId() {
@@ -56,6 +68,10 @@ public class Movie implements Serializable {
 
     public Rating getRating() {
         return rating;
+    }
+
+    public Videos getVideos() {
+        return videos;
     }
 
     @Override

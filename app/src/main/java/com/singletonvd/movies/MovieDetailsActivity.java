@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
@@ -18,6 +19,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView textViewTitle;
     private TextView textViewYear;
     private TextView textViewDescription;
+    private RecyclerView recyclerViewTrailers;
 
     public static Intent makeIntent(Context context, Movie movie) {
         Intent intent = new Intent(context, MovieDetailsActivity.class);
@@ -40,6 +42,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
             textViewTitle.setText(movie.getName());
             textViewYear.setText(String.valueOf(movie.getYear()));
             textViewDescription.setText(movie.getDescription());
+            Videos videos = movie.getVideos();
+            if (videos != null) {
+                TrailersAdapter trailersAdapter = new TrailersAdapter(videos.getTrailers());
+                recyclerViewTrailers.setAdapter(trailersAdapter);
+            }
         }
     }
 
@@ -48,5 +55,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         textViewTitle = findViewById(R.id.textViewTitle);
         textViewYear = findViewById(R.id.textViewYear);
         textViewDescription = findViewById(R.id.textViewDescription);
+        recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
     }
 }
