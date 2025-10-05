@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FavoritesListActivity extends AppCompatActivity {
@@ -24,14 +25,15 @@ public class FavoritesListActivity extends AppCompatActivity {
         initViews();
 
         MoviesAdapter moviesAdapter = new MoviesAdapter();
+        recyclerViewFavoriteMovies.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerViewFavoriteMovies.setAdapter(moviesAdapter);
+
         moviesAdapter.setOnCLickListener(movie ->
                 startActivity(MovieDetailsActivity.makeIntent(this, movie))
         );
 
         viewModel = new ViewModelProvider(this).get(FavoriteMoviesViewModel.class);
         viewModel.getMovies().observe(this, moviesAdapter::setMovieList);
-
-        recyclerViewFavoriteMovies.setAdapter(moviesAdapter);
     }
 
     private void initViews() {
