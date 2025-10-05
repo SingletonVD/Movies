@@ -2,6 +2,7 @@ package com.singletonvd.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,6 +46,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
             Videos videos = movie.getVideos();
             if (videos != null) {
                 TrailersAdapter trailersAdapter = new TrailersAdapter(videos.getTrailers());
+                trailersAdapter.setOnTrailerClickListener(
+                        trailer -> {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse(trailer.getUrl()));
+                            startActivity(intent);
+                        }
+                );
+
                 recyclerViewTrailers.setAdapter(trailersAdapter);
             }
         }
