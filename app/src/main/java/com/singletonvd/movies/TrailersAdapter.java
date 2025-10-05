@@ -8,14 +8,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.TrailerViewHolder> {
 
-    private final List<Trailer> trailers;
+    private List<Trailer> trailers = new ArrayList<>();
     private OnTrailerClickListener onTrailerClickListener;
 
-    public TrailersAdapter(List<Trailer> trailers) {
+    public void setTrailers(List<Trailer> trailers) {
         this.trailers = trailers;
         notifyDataSetChanged();
     }

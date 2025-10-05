@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +22,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView textViewYear;
     private TextView textViewDescription;
     private RecyclerView recyclerViewTrailers;
+    private RecyclerView recyclerViewReviews;
+    private MovieDetailsViewModel viewModel;
 
     public static Intent makeIntent(Context context, Movie movie) {
         Intent intent = new Intent(context, MovieDetailsActivity.class);
@@ -33,6 +36,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
         initViews();
+        viewModel = new ViewModelProvider(this).get(MovieDetailsViewModel.class);
+
+        TrailersAdapter trailersAdapter = new TrailersAdapter();
+        trailersAdapter.setOnTrailerClickListener(
+                trailer -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(trailer.getUrl()));
+                    startActivity(intent);
+                }
+        );
+        recyclerViewTrailers.setAdapter(trailersAdapter);
+
+        ReviewsAdapter reviewsAdapter = new ReviewsAdapter();
+        recyclerViewReviews.setAdapter(reviewsAdapter);
 
         Movie movie = (Movie) getIntent().getSerializableExtra(EXTRA_MOVIE);
 
@@ -43,19 +60,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
             textViewTitle.setText(movie.getName());
             textViewYear.setText(String.valueOf(movie.getYear()));
             textViewDescription.setText(movie.getDescription());
+
             Videos videos = movie.getVideos();
             if (videos != null) {
-                TrailersAdapter trailersAdapter = new TrailersAdapter(videos.getTrailers());
-                trailersAdapter.setOnTrailerClickListener(
-                        trailer -> {
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse(trailer.getUrl()));
-                            startActivity(intent);
-                        }
-                );
-
-                recyclerViewTrailers.setAdapter(trailersAdapter);
+                trailersAdapter.setTrailers(videos.getTrailers());
             }
+
+            viewModel.loadReviews(movie.getId());
+            viewModel.getReviews().observe(this, reviewsAdapter::setReviews);
         }
     }
 
@@ -65,5 +77,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         textViewYear = findViewById(R.id.textViewYear);
         textViewDescription = findViewById(R.id.textViewDescription);
         recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
+        recyclerViewReviews = findViewById(R.id.recyclerViewReviews);
     }
 }
