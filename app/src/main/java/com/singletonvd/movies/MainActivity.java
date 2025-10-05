@@ -22,14 +22,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initViews();
+
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         moviesAdapter = new MoviesAdapter();
-        recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
-        progressBarLoadingMovies = findViewById(R.id.progressBarLoadingMovies);
+        moviesAdapter.setOnReachEndListener(viewModel::loadMovies);
+        moviesAdapter.setOnCLickListener(movie ->
+                startActivity(MovieDetailsActivity.makeIntent(this, movie))
+        );
 
         recyclerViewMovies.setAdapter(moviesAdapter);
         recyclerViewMovies.setLayoutManager(new GridLayoutManager(this, 2));
-
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         viewModel.getMovies().observe(
                 this,
@@ -40,7 +43,10 @@ public class MainActivity extends AppCompatActivity {
             int visibility = isLoading ? View.VISIBLE : View.GONE;
             progressBarLoadingMovies.setVisibility(visibility);
         });
+    }
 
-        moviesAdapter.setOnReachEndListener(viewModel::loadMovies);
+    public void initViews() {
+        recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
+        progressBarLoadingMovies = findViewById(R.id.progressBarLoadingMovies);
     }
 }
