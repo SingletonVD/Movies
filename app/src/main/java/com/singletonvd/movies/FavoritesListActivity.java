@@ -23,15 +23,15 @@ public class FavoritesListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_favorites_list);
         initViews();
 
-        FavoriteMoviesAdapter favoriteMoviesAdapter = new FavoriteMoviesAdapter();
-        favoriteMoviesAdapter.setOnCLickListener(movie ->
+        MoviesAdapter moviesAdapter = new MoviesAdapter();
+        moviesAdapter.setOnCLickListener(movie ->
                 MovieDetailsActivity.makeIntent(this, movie)
         );
 
         viewModel = new ViewModelProvider(this).get(FavoriteMoviesViewModel.class);
-        viewModel.getMovies().observe(this, favoriteMoviesAdapter::setMovieList);
+        viewModel.getMovies().observe(this, moviesAdapter::setMovieList);
 
-        recyclerViewFavoriteMovies.setAdapter(favoriteMoviesAdapter);
+        recyclerViewFavoriteMovies.setAdapter(moviesAdapter);
     }
 
     private void initViews() {
